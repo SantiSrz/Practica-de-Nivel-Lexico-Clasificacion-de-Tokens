@@ -1,5 +1,7 @@
 package Trabajo_Clase;
 
+import java.util.Scanner;
+
 public class MiniLexer {
 
     public enum TipoToken {
@@ -25,8 +27,11 @@ public class MiniLexer {
     }
 
     public static void main(String[] args) {
-
-        String ejemplo = "int valor = 3 ; if ( valor == 5 ) valor = 0 ;";
+    	
+    	Scanner sc = new Scanner(System.in);
+    	String ejemplo;
+    	System.out.println("Inserta tu codigo: ");
+        ejemplo = sc.nextLine();
         String[] separacion = ejemplo.split(" ");
 
         Token[] tokens = new Token[separacion.length];
