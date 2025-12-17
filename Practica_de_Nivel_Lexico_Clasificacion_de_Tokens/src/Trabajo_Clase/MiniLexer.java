@@ -20,35 +20,8 @@ public class MiniLexer {
         }
 
         public String toString() {
-            return "Token: '" + lexema +"' -> de tipo: " + tipo;
+            return "Token: <" + tipo + ", \"" + lexema + "\">";
         }
-    }
-
-    public static void main(String[] args) {
-
-        String ejemplo = "int valor = 3 ; if ( valor == 5 ) valor = 0 ;";
-        String[] separacion = ejemplo.split(" ");
-
-        Token[] tokens = new Token[separacion.length];
-
-        int index = 0;
-
-        for (String lexema : separacion) {
-
-            lexema = lexema.trim();
-            if (lexema.isEmpty()) {
-            	continue;
-            }
-
-            TipoToken tipo = clasificarToken(lexema);
-            Token t = new Token(tipo, lexema);
-
-            tokens[index] = t;
-            index++;
-
-            System.out.println(t);
-        }
-
     }
 
     public static TipoToken clasificarToken(String lexema) {
@@ -71,6 +44,5 @@ public class MiniLexer {
 
         return TipoToken.IDENTIFICADOR;
     }
+    
 }
-
-
