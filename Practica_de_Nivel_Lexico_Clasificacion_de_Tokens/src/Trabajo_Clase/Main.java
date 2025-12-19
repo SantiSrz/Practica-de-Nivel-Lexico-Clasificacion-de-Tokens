@@ -34,7 +34,6 @@ public class Main {
 
             System.out.println(t);
         }
-        tokens = java.util.Arrays.copyOf(tokens, index);
         MiniParser parser = new MiniParser(tokens);
         parser.parseStmtList();
         System.out.println("El programa ha funcionado a la perfeccion");
