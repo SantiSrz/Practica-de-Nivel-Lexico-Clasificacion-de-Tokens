@@ -12,6 +12,7 @@ public class MiniParser {
 	Token[] tokens;
 	int actual;
 	
+	// Constructor que inicializa el parser con los tokens
 	public MiniParser(Token[] tokens) {
 		
 		this.tokens = tokens;
@@ -23,6 +24,7 @@ public class MiniParser {
 		
 	}
 	
+	// Verifica que el token actual sea del tipo esperado y avanza
 	public void match(TipoToken tipoEsperado) {
 		if (this.actual < this.tokens.length) {
 		Token t = this.tokens[this.actual];
@@ -34,27 +36,32 @@ public class MiniParser {
 		}
 	}
 	
+	// Procesa una lista de sentencias hasta el final
 	public void parseStmtList() {
 		while (this.actual < this.tokens.length) {
 			parseStmt();
 		}
 	}
 	
+	// Procesa una sentencia individual (declaracion, asignacion o print)
 	public void parseStmt() {
 		Token n = this.tokens[this.actual];
 		if (n.lexema.equals("int")) {
+			// Procesa declaracion: int nombreVariable ;
 			match(TipoToken.PALABRA_CLAVE);
 			String nombreVariable = this.tokens[this.actual].lexema;
 			match(TipoToken.IDENTIFICADOR);
 			registrarDeclaracion(nombreVariable, "int");
 			match(TipoToken.DELIMITADOR);
 		}else if (n.lexema.equals("print")) {
+			// Procesa impresion: print ( expresion ) ;
 			match(TipoToken.PALABRA_CLAVE);
 			match(TipoToken.DELIMITADOR);
 			parseExpr();
 			match(TipoToken.DELIMITADOR);
 			match(TipoToken.DELIMITADOR);
 		}else if (n.tipo == TipoToken.IDENTIFICADOR){
+			// Procesa asignacion: variable = expresion ;
 			String nombreVariable = n.lexema;
 			int indice = buscarVariable(nombreVariable);
 			if (indice == -1) {
@@ -73,6 +80,7 @@ public class MiniParser {
 		}
 	}
 	
+	// Procesa expresiones con suma y resta (precedencia baja)
 	public void parseExpr() {
 		parseTerm();
 		if (this.actual >= this.tokens.length) {
@@ -87,6 +95,7 @@ public class MiniParser {
 		}
 	}
 	
+	// Procesa terminos con multiplicacion y division (precedencia alta)
 	public void parseTerm() {
 		parseFactor();
 		while (this.actual < this.tokens.length && this.tokens[this.actual].lexema.equals("*") || this.tokens[this.actual].lexema.equals("/")) {
@@ -95,6 +104,7 @@ public class MiniParser {
 		}
 	}
 	
+	// Procesa factores: numeros, variables o expresiones entre parentesis
 	public void parseFactor() {
 		if (this.actual >= this.tokens.length) {
 	        System.out.println("Error, se esperaba un " + TipoToken.IDENTIFICADOR + " un " + TipoToken.LITERAL_NUMERICO + " o un '(' ");
@@ -102,6 +112,7 @@ public class MiniParser {
 	    }
 		Token g = this.tokens[this.actual];
 		if (g.tipo == TipoToken.IDENTIFICADOR) {
+			// Procesa una variable
 			String nombreVar = g.lexema;
 			int indice = buscarVariable(nombreVar);
 			if (indice == -1) {
@@ -114,8 +125,10 @@ public class MiniParser {
 	        }
 			match(TipoToken.IDENTIFICADOR);
 		}else if (g.tipo == TipoToken.LITERAL_NUMERICO) {
+			// Procesa un numero
 			match(TipoToken.LITERAL_NUMERICO);
 		}else if(this.tokens[this.actual].lexema.equals("(")){
+			// Procesa una expresion entre parentesis
 			match(TipoToken.DELIMITADOR);
 			parseExpr();
 			match(TipoToken.DELIMITADOR);
@@ -125,6 +138,7 @@ public class MiniParser {
 		}
 	}
 	
+	// Guarda la informacion de una variable declarada
 	public void registrarDeclaracion(String nombre, String tipo) {
 		this.nombres[this.contador] = nombre;
 	    this.tipos[this.contador] = tipo;
@@ -132,6 +146,7 @@ public class MiniParser {
 	    this.contador++;
 	}
 	
+	// Busca una variable por nombre y devuelve su indice o -1 si no existe
 	public int buscarVariable(String nombre) {
 		for(int i = 0; i < this.contador; i++) {
 			if (this.nombres[i].equals(nombre)) {
